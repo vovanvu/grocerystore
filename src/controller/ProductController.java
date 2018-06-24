@@ -84,17 +84,11 @@ public class ProductController extends HttpServlet {
 		String productName = request.getParameter("productName");
 		String price = request.getParameter("price");
 		String producerID = request.getParameter("producerID");
-		Producer producer = ProducerDAO.producerMap.get(producerID);
-		if (producer == null) {
-			request.getSession().setAttribute("errorMessage", "Không tồn tại nhà cung cấp này.");
-			System.out.println("khong ton tai");
-			response.sendRedirect("product?function=edit&id=" + productID + "");
-		} else {
-			request.getSession().removeAttribute("errorMessage");
-			Product product = new Product(productID, productName, price, null, producerID);
-			new ProductDAO().edit(product);
-			response.sendRedirect("showProduct.jsp");
-		}
+		request.getSession().removeAttribute("errorMessage");
+		Product product = new Product(productID, productName, price, null, producerID);
+		new ProductDAO().edit(product);
+		response.sendRedirect("showProduct.jsp");
+
 	}
 
 	private void addProduct(HttpServletRequest request, HttpServletResponse response)
@@ -102,39 +96,29 @@ public class ProductController extends HttpServlet {
 		String productName = request.getParameter("productName");
 		String price = request.getParameter("price");
 		String producerID = request.getParameter("producerID");
-		Producer producer = ProducerDAO.producerMap.get(producerID);
-		if (producer == null) {
-			request.setAttribute("productName", productName);
-			request.setAttribute("price", price);
-			request.setAttribute("producerID", producerID);
-			request.setAttribute("errorMessage", "Không tồn tại nhà cung cấp này.");
-			RequestDispatcher dispatcher = request.getRequestDispatcher("product/addProduct.jsp");
-			dispatcher.forward(request, response);
-		} else {
-			// id generate
-			String productID = "";
-			ResultSet rs;
-			String s = "";
-			try {
-				rs = new ConnectDTB().chonDuLieu("select * from product");
-				while (rs.next()) {
-					// if(rs.next())==null => s = ""
-					s = rs.getString(1);
-					s = s.substring(1);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
+		// id generate
+		String productID = "";
+		ResultSet rs;
+		String s = "";
+		try {
+			rs = new ConnectDTB().chonDuLieu("select * from product");
+			while (rs.next()) {
+				// if(rs.next())==null => s = ""
+				s = rs.getString(1);
+				s = s.substring(1);
 			}
-			if (s == "") {
-				productID = "P0";
-			} else {
-				int id = Integer.parseInt(s) + 1;
-				productID = "P" + id;
-			}
-			Product product = new Product(productID, productName, price, null, producerID);
-			new ProductDAO().add(product);
-			response.sendRedirect("showProduct.jsp");
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		if (s == "") {
+			productID = "P0";
+		} else {
+			int id = Integer.parseInt(s) + 1;
+			productID = "P" + id;
+		}
+		Product product = new Product(productID, productName, price, null, producerID);
+		new ProductDAO().add(product);
+		response.sendRedirect("showProduct.jsp");
 
 	}
 
