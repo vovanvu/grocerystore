@@ -1,6 +1,19 @@
 $(document)
     .ready(
         function() {
+        	function isProducerID(txtProducerID) {
+					var listProducer = document.getElementById("listProducer");
+					var i;
+					for (i = listProducer.options.length - 1; i >= 0; i--) {
+						if (listProducer.options[i].value == txtProducerID) {
+							return true;
+						}
+					}
+					return false;
+				}
+				
+
+
             function validatePhone(txtPhone) {
                 var filter = /^[0-9-+]+$/;
                 if (filter.test(txtPhone + "") && txtPhone.length >= 10 &&
@@ -27,20 +40,20 @@ $(document)
                         if ($('#customerName').val() == '') {
                             $('#error_customerName')
                                 .html(
-                                    'Bạn không được bỏ trống trường này!');
+                                    '<font color="red">Bạn không được bỏ trống trường này!</font>');
                             return false;
                         }
 
                         if ($('#userName').val() == '') {
                             $('#error_userName')
                                 .html(
-                                    'Bạn không được bỏ trống trường này!');
+                                    '<font color="red">Bạn không được bỏ trống trường này!</font>');
                             return false;
                         }
                         if ($('#password').val() == '') {
                             $('#error_passWord')
                                 .html(
-                                    'Bạn không được bỏ trống trường này!');
+                                    '<font color="red">Bạn không được bỏ trống trường này!</font>');
                             return false;
                         }
 
@@ -48,7 +61,7 @@ $(document)
                                 .val())) {
                             $('#error_phoneNumber')
                                 .html(
-                                    'Số điện thoại bạn nhập vào không phù hợp!');
+                                    '<font color="red">Số điện thoại bạn nhập vào không phù hợp!</font>');
                             return false;
                         }
 
@@ -88,31 +101,50 @@ $(document)
                 .bind({
                     'submit': function() {
 
+
                         if ($('#productName').val() == '') {
                             $('#error_productName')
                                 .html(
-                                    'Bạn không được bỏ trống trường này!');
+                                    '<font color="red">Bạn không được bỏ trống trường này!</font>');
                             return false;
                         }
 
                         if (!validateNumber($('#price').val())) {
-                            $('#error_price').html('Giá bạn nhập vào không phù hợp!');
+                            $('#error_price').html('<font color="red">Giá bạn nhập vào không phù hợp!</font>');
                             return false;
                         }
 
                         if ($('#producerID').val() == '') {
                             $('#error_producerID')
                                 .html(
-                                    'Bạn không được bỏ trống trường này!');
+                                    '<font color="red">Bạn không được bỏ trống trường này!</font>');
                             return false;
                         }
+                         if (!isProducerID($("#producerID").val())){
+									$('#error_producerID').html(
+											'<font color="red">Không tồn tại nhà cung cấp này.</font>');
+									return false;
+								}
 
 
                         return true;
                     },
                     'keydown': function() {
                         /*old way, will delay 1 keydown
-                        / if ($('#productName').val().length > 0) {
+                        / if ($('#prod$("#addProductForm").bind(
+						{
+							'submit' : function() {
+								if (!isProducerID($("#producerID").val()))
+
+								{
+									$('#error_producerID').html(
+											'Không tồn tại nhà cung cấp này.');
+									return false;
+								}
+
+								return true;
+							},
+						});uctName').val().length > 0) {
                              $('#error_productName').html(
                                  '');
                          }*/

@@ -19,37 +19,6 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="js/form-validate.js"></script>
-<!-- Bat loi producerID khong ton tai -->
-<script type="text/javascript">
-	$(document).ready(
-			function() {
-
-				function isProducerID(txtProducerID) {
-					var listProducer = document.getElementById("listProducer");
-					var i;
-					for (i = listProducer.options.length - 1; i >= 0; i--) {
-						if (listProducer.options[i].value == txtProducerID) {
-							return true;
-						}
-					}
-					return false;
-				}
-				$("#addProductForm").bind(
-						{
-							'submit' : function() {
-								if (!isProducerID($("#producerID").val()))
-
-								{
-									$('#error_producerID').html(
-											'Không tồn tại nhà cung cấp này.');
-									return false;
-								}
-
-								return true;
-							},
-						});
-			});
-</script>
 </head>
 <body>
 	<%
