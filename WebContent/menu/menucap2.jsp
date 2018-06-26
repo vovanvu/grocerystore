@@ -10,7 +10,7 @@
 			<li><a href="../showProduct.jsp">Sản phẩm</a></li>
 			<li><a href="../showOrder.jsp">Đơn hàng</a></li>
 		</ul>
-		<a href="orderOnline.jsp"><button
+		<a href="../orderOnline.jsp"><button
 				class="btn btn-danger navbar-btn">
 				<span class="glyphicon glyphicon-heart-empty"></span> Đặt hàng
 			</button></a>

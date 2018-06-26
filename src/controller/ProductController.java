@@ -56,7 +56,6 @@ public class ProductController extends HttpServlet {
 
 	private void deleteProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String id = request.getParameter("id");
-		ProductDAO.productMap.remove(id);
 		new ProductDAO().delete(id);
 		response.sendRedirect("showProduct.jsp");
 	}
