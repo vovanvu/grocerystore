@@ -12,15 +12,43 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link
+	href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+	rel="stylesheet"
+	integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+	crossorigin="anonymous">
+
+
+<style type="text/css">
+.cha {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 170px;
+}
+
+.con {
+	margin: auto;
+}
+
+#git {
+	width: 150px;
+}
+
+body {
+	background: #107896;
+	color: #FFF;
+}
+</style>
 </head>
 <body>
 	<jsp:include page="menu/menu.jsp"></jsp:include>
-	<!-- end header -->
-	<div class="container">
-		<div class="row">
-			<h2>VGStore - Best Grocery Item For The Best Life</h2>
-		</div>
+	<div class="cha">
+		<h2 class="con">VGStore - Best Grocery Item For The Best Life</h2>
+		<h3 class="con">Basic CRUD Web App Project using JSP/Servlet -
+			Java</h3>
+		<a id="git" class="btn btn-default con" href="https://github.com/vovanvu/grocerystore" target="blank"><i
+			class="fa fa-github fa-lg" id="github-icon"></i> Source on <i>GitHub</i></a>
 	</div>
-	<!-- end container -->
 </body>
 </html>
