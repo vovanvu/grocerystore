@@ -28,7 +28,7 @@
 </head>
 
 <body>
-	<jsp:include page="../menu/menu-materialize-navbar.html"></jsp:include>
+	<jsp:include page="../menu/menu-materialize-navbar.jsp"></jsp:include>
 	<div class="container">
 		<div class="row center">
 			<h4 class="light-blue-text darken-4 col s12">Thêm đơn hàng</h4>
