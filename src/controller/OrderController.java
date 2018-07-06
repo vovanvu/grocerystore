@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.OrderDAO;
+import dao.OrderItemDAO;
 import model.ConnectDTB;
 import model.Order;
+import model.OrderItem;
 
 /**
  * Servlet implementation class OrderController
@@ -37,6 +39,9 @@ public class OrderController extends HttpServlet {
 		case "delete":
 			deleteOrder(request, response);
 			break;
+		case "selectCustomer":
+			RequestDispatcher selectDispatcher = request.getRequestDispatcher("order/addOrder.jsp");
+			selectDispatcher.forward(request, response);
 		}
 	}
 
@@ -48,8 +53,10 @@ public class OrderController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String customerId = request.getParameter("customerIdPost");
-		String orderDate = request.getParameter("orderDatePost");
+		// String customerId = request.getParameter("customerIdPost");
+		// String orderDate = request.getParameter("orderDatePost");
+		String customerId = (String) request.getSession().getAttribute("id");
+		String orderDate = (String) request.getSession().getAttribute("date");
 		if (customerId == "" || orderDate == "") {
 			RequestDispatcher addDispatcher = request.getRequestDispatcher("order/addOrder.jsp");
 			addDispatcher.forward(request, response);
@@ -76,8 +83,40 @@ public class OrderController extends HttpServlet {
 			}
 			Order order = new Order(orderId, orderDate, customerId);
 			new OrderDAO().add(order);
+			//
+			// add order item
+			String[] listProductId = request.getParameterValues("productId");
+			String[] listQuantity = request.getParameterValues("quantity");
+			if (listProductId == null) {
+				System.out.println("No product info");
+			} else {
+				for (int i = 0; i < listProductId.length; i++) {
+					// id
+					String orderItemId = "";
+					ResultSet rs1;
+					String s1 = "";
+					try {
+						rs1 = ConnectDTB.chonDuLieu("SELECT * FROM OrderItem");
+						while (rs1.next()) {
+							// if(rs.next())==null => s = "" 
+							s1 = rs1.getString(1);
+							s1 = s1.substring(1);
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					if (s1 == "") {
+						orderItemId = "D0";
+					} else {
+						int id = Integer.parseInt(s1) + 1;
+						orderItemId = "D" + id;
+					}
+					OrderItem item = new OrderItem(orderItemId, listProductId[i], listQuantity[i], orderId);
+					new OrderItemDAO().add(item);
+				}
+			}
+			//
 			response.sendRedirect("showOrder.jsp");
 		}
 	}
-
 }

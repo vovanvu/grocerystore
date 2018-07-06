@@ -1,3 +1,4 @@
+<%@page import="model.Product"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
@@ -5,6 +6,8 @@
 %>
 <%@ page import="model.Customer"%>
 <%@page import="dao.CustomerDAO"%>
+<%@page import="dao.ProductDAO"%>
+
 <!DOCTYPE html>
 <html>
 
@@ -26,7 +29,6 @@
 }
 </style>
 </head>
-
 <body>
 	<jsp:include page="../menu/menu-materialize-navbar.jsp"></jsp:include>
 	<div class="container">
@@ -38,17 +40,42 @@
 		<div class="row">
 			<div class="col s12 m4" id="customer">
 				<div>
-					<form name="customerForm" action="order" method="post"
-						id="customerForm">
+					<form action="order" method="post" id="customerForm">
 						<h5>Thông tin khách hàng:</h5>
 						<strong>Mã khách hàng:</strong>
-						<p id="selectedCustomerId">Chưa chọn</p>
-						<input type="hidden" name="customerIdPost" value=""
+						<%
+							String id;
+							if (request.getParameter("id") == null) {
+								id = "Chưa chọn";
+							} else {
+								id = request.getParameter("id");
+								session.setAttribute("id", id);
+							}
+						%>
+						<p id="selectedCustomerId"><%=id%></p>
+						<input type="hidden" name="customerIdPost" value="<%=id%>"
 							id="customerIdPost"> <strong>Tên khách hàng:</strong>
-						<p id="selectedCustomerName">Chưa chọn</p>
+						<%
+							String customerName;
+							if (request.getParameter("id") == null) {
+								customerName = "Chưa chọn";
+							} else {
+								customerName = CustomerDAO.customerMap.get(request.getParameter("id")).getCustomerName();
+							}
+						%>
+						<p id="selectedCustomerName"><%=customerName%></p>
 						<strong>Ngày đặt hàng:</strong>
-						<p id="selectedOrderDate">Chưa chọn</p>
-						<input type="hidden" name="orderDatePost" value=""
+						<%
+							String date;
+							if (request.getParameter("orderdate") == null) {
+								date = "Chưa chọn";
+							} else {
+								date = request.getParameter("orderdate");
+								session.setAttribute("date", date);
+							}
+						%>
+						<p id="selectedOrderDate"><%=date%></p>
+						<input type="hidden" name="orderDatePost" value="<%=date%>"
 							id="orderDatePost">
 					</form>
 				</div>
@@ -85,9 +112,13 @@
 								sản phẩm</label>
 						</div>
 						<datalist id="lstProductId">
-							<option value="SP1">Bao cao su</option>
-							<option value="SP2">Gel bôi trơn</option>
-							<option value="SP3">Viagra</option>
+							<%
+								for (Product product : ProductDAO.productMap.values()) {
+							%>
+							<option value="<%=product.getProductID()%>"><%=product.getProductName()%></option>
+							<%
+								}
+							%>
 						</datalist>
 						<div class="input-field">
 							<input type="number" name="quantity" min="1" id="quantity"
@@ -96,41 +127,40 @@
 						<button onclick="addProduct()"
 							class="btn waves-effect waves-light ">Thêm sản phẩm</button>
 						<hr>
-						<h5>
-							Tổng cộng: <span id="sum">0</span>
-						</h5>
+						<h6>
+							Số loại sản phẩm: <span id="sum">0</span>
+						</h6>
 					</div>
 					<div class="col s12 m8">
 						<h5>Sản phẩm đã thêm</h5>
-						<table id="cart" class="bordered">
-							<tbody id="productTableBody">
-								<tr>
-									<th>STT</th>
-									<th>Mã sản phẩm</th>
-									<th>Tên sản phẩm</th>
-									<th>Số lượng</th>
-									<th>Xoá</th>
-								</tr>
-							</tbody>
-						</table>
+						<form action="order" id="orderListForm" method="post">
+							<table id="cart" class="bordered">
+								<tbody id="productTableBody">
+									<tr>
+										<th>STT</th>
+										<th>Mã sản phẩm</th>
+										<th>Tên sản phẩm</th>
+										<th>Số lượng</th>
+										<th>Xoá</th>
+									</tr>
+								</tbody>
+							</table>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="row center">
 			<div class="col s12">
-				<button type="submit" form="customerForm"
-					class="btn waves-effect waves-light" id="btnAddOrder">Thêm
-					đơn hàng</button>
+				<button type="submit" class="btn waves-effect waves-light"
+					id="btnAddOrder" onclick="submitForms()">Thêm đơn hàng</button>
 			</div>
 		</div>
 	</div>
 	<jsp:include page="../footer/footer-materialize.html"></jsp:include>
 	<script type="text/javascript">
-		$("#order").addClass("disabledbutton");
-
+	<!--$("#order").addClass("disabledbutton");-->
 		function setSelectedCustomer() {
-
 			var selectedId = document.getElementById("customerId").value;
 			var selectedDate = document.getElementById("orderDate").value;
 			var selectedName = $(
@@ -148,6 +178,9 @@
 				// $("#order,#btnAddOrder").removeClass("disabledbutton");
 				$("#customerIdPost").val(selectedId);
 				$("#orderDatePost").val(selectedDate);
+				//redirect
+				window.location.href = "order?function=selectCustomer&id="
+						+ selectedId + "&orderdate=" + selectedDate;
 			}
 		}
 		var count = 0;
@@ -155,11 +188,20 @@
 
 		function addProduct() {
 			var pdata = document.getElementById("productId").value;
-			if (pdata == "") {
-				alert("Vui lòng nhập mã sản phẩm!");
+			//Check if input product is not valid
+			var listProductId = document.getElementById("lstProductId");
+			var i;
+			var falseId = false;
+			for (i = 0; i < listProductId.options.length; i++) {
+				if (pdata == listProductId.options[i].value) {
+					falseId = true;
+				}
+			}
+			if (pdata == "" || falseId == false) {
+				alert("Bạn chưa nhập mã sản phẩm hoặc mã sản phẩm sai!");
 			} else {
 				count++;
-				var productId = document.getElementById("productId").value;
+				var productId = pdata;
 				var quantity = document.getElementById("quantity").value;
 				var row = "";
 				var delbtn = "<button onclick=deleteProduct(" + count
@@ -167,9 +209,19 @@
 				var productName = $(
 						"#lstProductId option[value='" + productId + "']")
 						.text();
-				row += "<tr id=" + count + "><td>" + count + "</td><td>"
-						+ productId + "</td><td>" + productName + "</td><td>"
-						+ quantity + "</td><td>" + delbtn + "</td></tr>";
+				//row += "<tr id=" + count + "><td>" + count + "</td><td>"
+				//		+ productId + "</td><td>" + productName + "</td><td>"
+				//		+ quantity + "</td><td>" + delbtn + "</td></tr>";
+				//<td><input type="text" name="data" value="stt" disabled="disabled"/></td>
+
+				row += "<tr id=" + count + "><td>"
+						+ count
+						+ "</td><td><input type=\"text\" name=\"productId\"  value="+productId+" readonly/>"
+						+ "</td><td>"
+						+ productName
+						+ "</td><td><input type=\"number\" name=\"quantity\"  value="+quantity+" />"
+						+ "</td><td>" + delbtn + "</td></tr>";
+
 				var newBody = document.getElementById("productTableBody").innerHTML
 						+ row;
 				document.getElementById("productTableBody").innerHTML = newBody;
@@ -178,6 +230,7 @@
 				//
 				rowCount = $('#cart tr').length - 1;
 				$("#sum").text(rowCount);
+				falseId = false;
 			}
 		}
 
@@ -185,6 +238,10 @@
 			$("#" + id).remove();
 			rowCount = $('#cart tr').length - 1;
 			$("#sum").text(rowCount);
+		}
+		submitForms = function() {
+			//document.getElementById("customerForm").submit();
+			document.getElementById("orderListForm").submit();
 		}
 	</script>
 </body>
