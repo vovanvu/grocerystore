@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.OrderDAO;
 import dao.OrderItemDAO;
 import model.ConnectDTB;
+import model.IdGenerator;
 import model.Order;
 import model.OrderItem;
 
@@ -42,6 +43,11 @@ public class OrderController extends HttpServlet {
 		case "selectCustomer":
 			RequestDispatcher selectDispatcher = request.getRequestDispatcher("order/addOrder.jsp");
 			selectDispatcher.forward(request, response);
+			break;
+		case "detail":
+			RequestDispatcher detailDispatcher = request.getRequestDispatcher("order/detailOrder.jsp");
+			detailDispatcher.forward(request, response);
+			break;
 		}
 	}
 
@@ -62,25 +68,27 @@ public class OrderController extends HttpServlet {
 			addDispatcher.forward(request, response);
 		} else {
 			// id
-			String orderId = "";
-			ResultSet rs;
-			String s = "";
-			try {
-				rs = new ConnectDTB().chonDuLieu("select * from Orders");
-				while (rs.next()) {
-					// if(rs.next())==null => s = ""
-					s = rs.getString(1);
-					s = s.substring(1);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			if (s == "") {
-				orderId = "O0";
-			} else {
-				int id = Integer.parseInt(s) + 1;
-				orderId = "O" + id;
-			}
+			// String orderId = "";
+			// ResultSet rs;
+			// String s = "";
+			// try {
+			// rs = new ConnectDTB().chonDuLieu("select * from Orders");
+			// while (rs.next()) {
+			// // if(rs.next())==null => s = ""
+			// s = rs.getString(1);
+			// s = s.substring(1);
+			//
+			// }
+			// } catch (SQLException e) {
+			// e.printStackTrace();
+			// }
+			// if (s == "") {
+			// orderId = "O0";
+			// } else {
+			// int id = Integer.parseInt(s) + 1;
+			// orderId = "O" + id;
+			// }
+			String orderId = IdGenerator.IDGen("OD");
 			Order order = new Order(orderId, orderDate, customerId);
 			new OrderDAO().add(order);
 			//
@@ -91,26 +99,29 @@ public class OrderController extends HttpServlet {
 				System.out.println("No product info");
 			} else {
 				for (int i = 0; i < listProductId.length; i++) {
-					// id
-					String orderItemId = "";
-					ResultSet rs1;
-					String s1 = "";
-					try {
-						rs1 = ConnectDTB.chonDuLieu("SELECT * FROM OrderItem");
-						while (rs1.next()) {
-							// if(rs.next())==null => s = "" 
-							s1 = rs1.getString(1);
-							s1 = s1.substring(1);
-						}
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-					if (s1 == "") {
-						orderItemId = "D0";
-					} else {
-						int id = Integer.parseInt(s1) + 1;
-						orderItemId = "D" + id;
-					}
+					// id - chi ap dung duoc tu 0 - 10
+					// String orderItemId = "";
+					// ResultSet rs1;
+					// String s1 = "";
+					// try {
+					// rs1 = ConnectDTB.chonDuLieu("SELECT * FROM OrderItem");
+					// while (rs1.next()) {
+					// // if(rs.next())==null => s = ""
+					// s1 = rs1.getString(1);
+					// s1 = s1.substring(1);
+					// System.out.println(s1);
+					// }
+					// } catch (SQLException e) {
+					// e.printStackTrace();
+					// }
+					// if (s1 == "") {
+					// orderItemId = "D0";
+					// } else {
+					// int id = Integer.parseInt(s1) + 1;
+					// orderItemId = "D" + id;
+					// }
+					// id random 100 -1000
+					String orderItemId = IdGenerator.IDGen("ODI");
 					OrderItem item = new OrderItem(orderItemId, listProductId[i], listQuantity[i], orderId);
 					new OrderItemDAO().add(item);
 				}

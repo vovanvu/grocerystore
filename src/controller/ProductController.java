@@ -15,6 +15,7 @@ import dao.CustomerDAO;
 import dao.ProductDAO;
 import model.ConnectDTB;
 import model.Customer;
+import model.IdGenerator;
 import model.Product;
 import sun.rmi.server.Dispatcher;
 import dao.ProducerDAO;
@@ -96,25 +97,26 @@ public class ProductController extends HttpServlet {
 		String price = request.getParameter("price");
 		String producerID = request.getParameter("producerID");
 		// id generate
-		String productID = "";
-		ResultSet rs;
-		String s = "";
-		try {
-			rs = new ConnectDTB().chonDuLieu("select * from product");
-			while (rs.next()) {
-				// if(rs.next())==null => s = ""
-				s = rs.getString(1);
-				s = s.substring(1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		if (s == "") {
-			productID = "P0";
-		} else {
-			int id = Integer.parseInt(s) + 1;
-			productID = "P" + id;
-		}
+		// String productID = "";
+		// ResultSet rs;
+		// String s = "";
+		// try {
+		// rs = new ConnectDTB().chonDuLieu("select * from product");
+		// while (rs.next()) {
+		// // if(rs.next())==null => s = ""
+		// s = rs.getString(1);
+		// s = s.substring(1);
+		// }
+		// } catch (SQLException e) {
+		// e.printStackTrace();
+		// }
+		// if (s == "") {
+		// productID = "P0";
+		// } else {
+		// int id = Integer.parseInt(s) + 1;
+		// productID = "P" + id;
+		// }
+		String productID = IdGenerator.IDGen("P");
 		Product product = new Product(productID, productName, price, null, producerID);
 		new ProductDAO().add(product);
 		response.sendRedirect("showProduct.jsp");

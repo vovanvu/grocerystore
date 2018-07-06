@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.CustomerDAO;
 import model.ConnectDTB;
 import model.Customer;
+import model.IdGenerator;
 
 /**
  * Servlet implementation class Process
@@ -53,7 +54,6 @@ public class CustomerController extends HttpServlet {
 			detailDispatcher.forward(request, response);
 		}
 	}
-
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -96,25 +96,26 @@ public class CustomerController extends HttpServlet {
 		String password = request.getParameter("password");
 		String phoneNumber = request.getParameter("phoneNumber");
 		// id generate
-		String customerID = "";
-		ResultSet rs;
-		String s = "";
-		try {
-			rs = new ConnectDTB().chonDuLieu("select * from customer");
-			while (rs.next()) {
-				// if(rs.next())==null => s = ""
-				s = rs.getString(1);
-				s = s.substring(1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		if (s == "") {
-			customerID = "C0";
-		} else {
-			int id = Integer.parseInt(s) + 1;
-			customerID = "C" + id;
-		}
+		// String customerID = "";
+		// ResultSet rs;
+		// String s = "";
+		// try {
+		// rs = new ConnectDTB().chonDuLieu("select * from customer");
+		// while (rs.next()) {
+		// // if(rs.next())==null => s = ""
+		// s = rs.getString(1);
+		// s = s.substring(1);
+		// }
+		// } catch (SQLException e) {
+		// e.printStackTrace();
+		// }
+		// if (s == "") {
+		// customerID = "C0";
+		// } else {
+		// int id = Integer.parseInt(s) + 1;
+		// customerID = "C" + id;
+		// }
+		String customerID = IdGenerator.IDGen("C");
 		Customer customer = new Customer(customerID, customerName, userName, password, phoneNumber);
 		new CustomerDAO().add(customer);
 		response.sendRedirect("showCustomer.jsp");
