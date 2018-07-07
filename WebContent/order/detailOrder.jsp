@@ -25,6 +25,11 @@
 <body>
 	<jsp:include page="../menu/menu.jsp"></jsp:include>
 	<div class="container">
+	<ul class="breadcrumb">
+			<li><a href="index.jsp">Trang chủ</a></li>
+			<li><a href="showOrder.jsp">Quản lý đơn hàng</a></li>
+			<li><a href="#">Thông tin đơn đặt hàng</a></li>
+		</ul>
 		<h2>Thông tin đơn đặt hàng</h2>
 		<%
 			String id = request.getParameter("id");

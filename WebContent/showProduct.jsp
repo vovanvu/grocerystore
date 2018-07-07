@@ -1,3 +1,4 @@
+<%@page import="model.ThousandSeparator"%>
 <%@page import="dao.ProducerDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -38,6 +39,10 @@
 <body>
 	<jsp:include page="menu/menu.jsp"></jsp:include>
 	<div class="container">
+		<ul class="breadcrumb">
+			<li><a href="index.jsp">Trang chủ</a></li>
+			<li><a href="#">Quản lý sản phẩm</a></li>
+		</ul>
 		<h2>Quản lý sản phẩm</h2>
 		<div class="row">
 			<div
@@ -66,7 +71,12 @@
 				<tr>
 					<td><%=count%></td>
 					<td><%=product.getProductName()%></td>
-					<td><%=product.getPrice()%></td>
+					<% 
+					String price = product.getPrice();
+					price = ThousandSeparator.thousandSeparator(price) +  " &#8363;";
+					
+					%>
+					<td><%=price%></td>
 					<td><%=product.getProducerID()%> - <%=ProducerDAO.producerMap.get(product.getProducerID()).getProducerName()%></td>
 					<td><a
 						href="product?function=edit&id=<%=product.getProductID()%>"><button

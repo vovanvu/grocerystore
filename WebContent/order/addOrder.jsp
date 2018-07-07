@@ -31,6 +31,15 @@
 </head>
 <body>
 	<jsp:include page="../menu/menu-materialize-navbar.jsp"></jsp:include>
+		<nav>
+    <div class="nav-wrapper">
+      <div class="col s12">
+        <a href="index.jsp" class="breadcrumb">Trang chủ</a>
+        <a href="showOrder.jsp" class="breadcrumb">Quản lý đơn hàng</a>
+        <a href="#!" class="breadcrumb">Thêm đơn hàng</a>
+      </div>
+    </div>
+  </nav>
 	<div class="container">
 		<div class="row center">
 			<h4 class="light-blue-text darken-4 col s12">Thêm đơn hàng</h4>

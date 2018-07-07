@@ -74,7 +74,9 @@ public class OrderItemDAO implements ObjectDAO {
 			while (rs.next()) {
 				String orderItemId = rs.getString(1);
 				String productId = rs.getString(2);
+				System.out.println(productId);
 				String quantity = rs.getString(3);
+				System.out.println(quantity);
 				String orderId = rs.getString(4);
 				listOrder.put(orderItemId, new OrderItem(orderItemId, productId, quantity, orderId));
 			}
@@ -85,12 +87,12 @@ public class OrderItemDAO implements ObjectDAO {
 		return null;
 	}
 
-	// public static void main(String[] args) {
-	// OrderItemDAO dao = new OrderItemDAO();
-	// OrderItem order = new OrderItem("OD1", "P1", "10", "O1");
-	// dao.add(order);
-	// dao.edit(order);
-	// dao.delete("OD1");
-	// }
+	public static void main(String[] args) {
+		OrderItemDAO dao = new OrderItemDAO();
+		// OrderItem order = new OrderItem("OD1", "P1", "10", "O1");
+		// dao.add(order);
+		// dao.edit(order);
+		// dao.delete("OD1");
+	}
 
 }
