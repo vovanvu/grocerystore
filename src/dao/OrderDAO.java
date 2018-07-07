@@ -11,12 +11,16 @@ import java.util.Set;
 
 import model.ConnectDTB;
 import model.Order;
-import model.Producer;;
+import model.Producer;
+import model.ThousandSeparator;;
 
 public class OrderDAO implements ObjectDAO {
 
 	public static Map<String, Order> orderMap = getLoadOrderDTB();
+	// filter date set
 	public static Set<String> setOrderDate = getLoadDate();
+	// total price each order
+	public static Map<String, String> totalPriceMap = getLoadTotalPrice();
 
 	public Map<String, Order> loadOrderFilterByDate(String orderDate) {
 		Map<String, Order> res = new HashMap<String, Order>();
@@ -26,6 +30,25 @@ public class OrderDAO implements ObjectDAO {
 			}
 		}
 		return res;
+	}
+
+	private static Map<String, String> getLoadTotalPrice() {
+		Map<String, String> res = new HashMap<String, String>();
+		try {
+			String query = "SELECT OD.OrderId, SUM(PD.PRICE*ODI.Quantity) AS TONGGIATIEN FROM Orders OD JOIN OrderItem ODI ON OD.OrderId=ODI.OrderId JOIN PRODUCT PD ON ODI.PRODUCTID = PD.ProductId GROUP BY OD.OrderId";
+			ResultSet rs = ConnectDTB.chonDuLieu(query);
+			while (rs.next()) {
+				String orderId = rs.getString(1);
+				String totalPrice = rs.getString(2);
+				totalPrice = ThousandSeparator.thousandSeparator(totalPrice);
+				totalPrice = totalPrice + " \u20AB";
+				res.put(orderId, totalPrice);
+			}
+			return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static Set<String> getLoadDate() {
@@ -105,9 +128,10 @@ public class OrderDAO implements ObjectDAO {
 		return true;
 	}
 
-	// public static void main(String[] args) {
-	// Order order = new Order("OD1", "2018-12-01", "C1");
-	// new OrderDAO().delete("OD1");
-	// }
+	public static void main(String[] args) {
+		OrderDAO dao = new OrderDAO();
+		// Order order = new Order("OD1", "2018-12-01", "C1");
+		// new OrderDAO().delete("OD1");
+	}
 
 }

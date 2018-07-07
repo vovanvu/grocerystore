@@ -19,6 +19,11 @@
 <body>
 	<jsp:include page="../menu/menu.jsp"></jsp:include>
 	<div class="container">
+		<ul class="breadcrumb">
+			<li><a href="index.jsp">Trang chủ</a></li>
+			<li><a href="showCustomer.jsp">Quản lý khách hàng</a></li>
+			<li><a href="#">Thêm khách hàng</a></li>
+		</ul>
 		<h2>Thêm khách hàng</h2>
 		<form class="form-horizontal" action="customer?function=add"
 			method="post" id="addCustomerForm">

@@ -8,10 +8,12 @@
 <%@ page import="java.util.Set"%>
 <%
 	Map<String, Order> mapOrder = OrderDAO.orderMap;
-	// map for get customerName
+	//get customerName map
 	Map<String, Customer> mapCustomer = CustomerDAO.customerMap;
-	//set for get orderDate
+	//get orderDate set
 	Set<String> setDate = OrderDAO.setOrderDate;
+	//get total price map
+	Map<String, String> mapTotalPrice = OrderDAO.totalPriceMap;
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -44,6 +46,10 @@
 <body>
 	<jsp:include page="menu/menu.jsp"></jsp:include>
 	<div class="container">
+	<ul class="breadcrumb">
+			<li><a href="index.jsp">Trang chủ</a></li>
+			<li><a href="#">Quản lý đơn hàng</a></li>
+		</ul>
 		<h2>Quản lý đơn hàng</h2>
 		<div class="row">
 			<div class="col-md-2">
@@ -96,7 +102,13 @@
 					<td><%=mapCustomer.get(order.getCustomerId()).getCustomerName()%></td>
 					<td><%=order.getOrderId()%></td>
 					<td><%=order.getOrderDate()%></td>
-					<td><%=100000%></td>
+					<%
+						String total = mapTotalPrice.get(order.getOrderId());
+							if (total == null) {
+								total = "0 \u20AB";
+							}
+					%>
+					<td><%=total%></td>
 					<td><a href="order?function=edit&id=<%=order.getOrderId()%>"><button
 								class="btn btn-primary btn-sm">Sửa</button></a> <a
 						href="order?function=delete&id=<%=order.getOrderId()%>"><button
