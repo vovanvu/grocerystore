@@ -32,7 +32,7 @@ public class OrderDAO implements ObjectDAO {
 		return res;
 	}
 
-	private static Map<String, String> getLoadTotalPrice() {
+	public static Map<String, String> getLoadTotalPrice() {
 		Map<String, String> res = new HashMap<String, String>();
 		try {
 			String query = "SELECT OD.OrderId, SUM(PD.PRICE*ODI.Quantity) AS TONGGIATIEN FROM Orders OD JOIN OrderItem ODI ON OD.OrderId=ODI.OrderId JOIN PRODUCT PD ON ODI.PRODUCTID = PD.ProductId GROUP BY OD.OrderId";
@@ -117,9 +117,11 @@ public class OrderDAO implements ObjectDAO {
 	@Override
 	public boolean delete(String id) {
 		orderMap.remove(id);
-		String sql = "delete from Orders where OrderId='" + id + "'";
+		String sql1 = "delete from OrderItem where OrderId='" + id + "'";
+		String sql2 = "delete from Orders where OrderId='" + id + "'";
 		try {
-			ConnectDTB.thucThiSQL(sql);
+			ConnectDTB.thucThiSQL(sql1);
+			ConnectDTB.thucThiSQL(sql2);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
@@ -128,10 +130,10 @@ public class OrderDAO implements ObjectDAO {
 		return true;
 	}
 
-	public static void main(String[] args) {
-		OrderDAO dao = new OrderDAO();
-		// Order order = new Order("OD1", "2018-12-01", "C1");
-		// new OrderDAO().delete("OD1");
-	}
+//	public static void main(String[] args) {
+//		OrderDAO dao = new OrderDAO();
+//		// Order order = new Order("OD1", "2018-12-01", "C1");
+//		// new OrderDAO().delete("OD1");
+//	}
 
 }

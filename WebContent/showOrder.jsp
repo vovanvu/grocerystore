@@ -13,7 +13,7 @@
 	//get orderDate set
 	Set<String> setDate = OrderDAO.setOrderDate;
 	//get total price map
-	Map<String, String> mapTotalPrice = OrderDAO.totalPriceMap;
+	Map<String, String> mapTotalPrice = OrderDAO.getLoadTotalPrice();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -109,8 +109,7 @@
 							}
 					%>
 					<td><%=total%></td>
-					<td><a href="order?function=edit&id=<%=order.getOrderId()%>"><button
-								class="btn btn-primary btn-sm">Sửa</button></a> <a
+					<td> <a
 						href="order?function=delete&id=<%=order.getOrderId()%>"><button
 								class="btn btn-warning btn-sm">Xoá</button></a> <a
 						href="order?function=detail&id=<%=order.getOrderId()%>"><button

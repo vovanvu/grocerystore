@@ -10,9 +10,31 @@ import java.util.Map;
 import model.ConnectDTB;
 import model.Customer;
 import model.OrderItem;
+import model.ThousandSeparator;
 
 public class OrderItemDAO implements ObjectDAO {
 	public static Map<String, OrderItem> orderItemMap = getLoadOrderDTB();
+
+	public static Map<String, String> getLoadTotalItemPrice() {
+		Map<String, String> res = new HashMap<String, String>();
+		try {
+			String query = "SELECT ODI.OrderItemId, (PD.PRICE*ODI.Quantity) AS GIATIENMOIMON FROM OrderItem ODI JOIN PRODUCT PD ON ODI.ProductId = PD.PRODUCTID";
+			ResultSet rs = ConnectDTB.chonDuLieu(query);
+			while (rs.next()) {
+				String orderId = rs.getString(1);
+				System.out.println(orderId);
+				String totalPrice = rs.getString(2);
+				totalPrice = ThousandSeparator.thousandSeparator(totalPrice);
+				totalPrice = totalPrice + " \u20AB";
+				System.out.println(totalPrice);
+				res.put(orderId, totalPrice);
+			}
+			return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	public boolean add(Object obj) {
@@ -74,9 +96,7 @@ public class OrderItemDAO implements ObjectDAO {
 			while (rs.next()) {
 				String orderItemId = rs.getString(1);
 				String productId = rs.getString(2);
-				System.out.println(productId);
 				String quantity = rs.getString(3);
-				System.out.println(quantity);
 				String orderId = rs.getString(4);
 				listOrder.put(orderItemId, new OrderItem(orderItemId, productId, quantity, orderId));
 			}
@@ -87,8 +107,26 @@ public class OrderItemDAO implements ObjectDAO {
 		return null;
 	}
 
+	public static Map<String, OrderItem> getOrderItemByOrderId(String orderId) {
+		Map<String, OrderItem> res = new HashMap<String, OrderItem>();
+		try {
+			ResultSet rs = ConnectDTB.chonDuLieu("SELECT * FROM OrderItem WHERE OrderId='" + orderId + "'");
+			while (rs.next()) {
+				String orderItemId = rs.getString(1);
+				String productId = rs.getString(2);
+				String quantity = rs.getString(3);
+				res.put(orderItemId, new OrderItem(orderItemId, productId, quantity, orderId));
+			}
+			return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static void main(String[] args) {
 		OrderItemDAO dao = new OrderItemDAO();
+		//dao.getOrderItemByOrderId("OD1632");
 		// OrderItem order = new OrderItem("OD1", "P1", "10", "O1");
 		// dao.add(order);
 		// dao.edit(order);
